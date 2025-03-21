@@ -5,18 +5,18 @@ import (
 	"gorm.io/gorm"
 )
 
-func GenerateUniqueUUID(db *gorm.DB, model interface{}) (string, error) {
-	var id string
+func GenerateUniqueUUID(db *gorm.DB, model any) (uuid.UUID, error) {
+	var uniqueID uuid.UUID
 	for {
-		id = uuid.New().String()
-		if isUnique(db, model, id) {
+		uniqueID = uuid.New()
+		if isUnique(db, model, uniqueID.String()) {
 			break
 		}
 	}
-	return id, nil
+	return uniqueID, nil
 }
 
-func isUnique(db *gorm.DB, model interface{}, id string) bool {
+func isUnique(db *gorm.DB, model any, id string) bool {
 	var count int64
 	stmt := &gorm.Statement{DB: db}
 	stmt.Parse(model)
